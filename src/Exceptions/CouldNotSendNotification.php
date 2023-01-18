@@ -21,7 +21,7 @@ class CouldNotSendNotification extends \Exception
     /**
      * Thrown on a generic error.
      *
-     * @param mixed $notification
+     * @param  mixed  $notification
      * @return static
      */
     public static function genericMessage($message)
@@ -33,7 +33,7 @@ class CouldNotSendNotification extends \Exception
      * Thrown if a notification instance does not implement a toExpo() method, but is
      * attempting to be delivered via the Expo notification channel.
      *
-     * @param mixed $notification
+     * @param  mixed  $notification
      * @return static
      */
     public static function undefinedMethod($notification)
@@ -48,7 +48,7 @@ class CouldNotSendNotification extends \Exception
      * Thrown if a notification instance's `toExpo()` method,
      * does not return an instance of `\NotificationChannels\Expo\ExpoMessage`.
      *
-     * @param mixed $notification
+     * @param  mixed  $notification
      * @return static
      */
     public static function couldNotCreateMessage($notification)
@@ -63,7 +63,7 @@ class CouldNotSendNotification extends \Exception
      * Thrown if a notifiable instance's `routeNotificationFor` method does not return a
      * valid Expo push token.
      *
-     * @param mixed $notifiable
+     * @param  mixed  $notifiable
      * @return static
      */
     public static function noValidDestination($notifiable)
@@ -78,7 +78,7 @@ class CouldNotSendNotification extends \Exception
      * Thrown if a 400-level Http error was encountered whilst attempting to deliver the
      * notification.
      *
-     * @param ClientException $exception
+     * @param  ClientException  $exception
      * @return static
      */
     public static function clientError(ClientException $exception)
@@ -99,7 +99,7 @@ class CouldNotSendNotification extends \Exception
      * Thrown if an unexpected exception was encountered whilst attempting to deliver the
      * notification.
      *
-     * @param Exception $exception
+     * @param  Exception  $exception
      * @return static
      */
     public static function unexpectedException(Exception $exception)

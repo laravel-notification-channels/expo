@@ -13,6 +13,7 @@ class ExpoChannel
 {
     /**
      * The Http Client.
+     *
      * @var Client
      */
     protected $client;
@@ -20,7 +21,7 @@ class ExpoChannel
     /**
      * Initialise a new Expo Push Channel instance.
      *
-     * @param Client $client
+     * @param  Client  $client
      * @return void
      */
     public function __construct(Client $client)
@@ -31,8 +32,8 @@ class ExpoChannel
     /**
      * Send the given notification.
      *
-     * @param mixed $notifiable
-     * @param Notification $notification
+     * @param  mixed  $notifiable
+     * @param  Notification  $notification
      *
      * @throws CouldNotSendNotification|GuzzleException
      */
