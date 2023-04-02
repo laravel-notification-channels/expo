@@ -14,6 +14,13 @@ class ExpoMessage
     protected $title;
 
     /**
+     * The message subtitle (iOS).
+     *
+     * @var string
+     */
+    protected $subtitle;
+
+    /**
      * The message body.
      *
      * @var string
@@ -96,6 +103,19 @@ class ExpoMessage
     public function title(string $value): ExpoMessage
     {
         $this->title = $value;
+
+        return $this;
+    }
+
+    /**
+     * Set the message subtitle (iOS).
+     *
+     * @param  string  $value
+     * @return $this
+     */
+    public function subtitle(string $value): ExpoMessage
+    {
+        $this->subtitle = $value;
 
         return $this;
     }
@@ -230,6 +250,9 @@ class ExpoMessage
             'data'      =>  $this->jsonData,
             'priority'  =>  $this->priority,
         ];
+        if (! empty($this->subtitle)) {
+            $message['subtitle'] = $this->subtitle;
+        }
         if (! empty($this->channelId)) {
             $message['channelId'] = $this->channelId;
         }

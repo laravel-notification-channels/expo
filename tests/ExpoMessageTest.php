@@ -45,6 +45,13 @@ class ExpoMessageTest extends \PHPUnit\Framework\TestCase
     }
 
     /** @test */
+    public function it_can_set_the_subtitle()
+    {
+        $this->message->subtitle('Subtitle');
+        $this->assertEquals('Subtitle', Arr::get($this->message->toArray(), 'subtitle'));
+    }
+
+    /** @test */
     public function it_can_set_the_body()
     {
         $this->message->body('Body');
