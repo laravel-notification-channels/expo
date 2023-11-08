@@ -48,7 +48,7 @@ class ExpoChannel
         }
 
         /** @var ExpoMessage $message */
-        if (! ($message = $notification->toExpo($notification)) instanceof ExpoMessage) {
+        if (! ($message = $notification->toExpo($notifiable)) instanceof ExpoMessage) {
             throw CouldNotSendNotification::couldNotCreateMessage($notification);
         }
 
