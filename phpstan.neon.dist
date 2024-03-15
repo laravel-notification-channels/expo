@@ -1,0 +1,15 @@
+includes:
+    - ./vendor/larastan/larastan/extension.neon
+
+parameters:
+    paths:
+        - src
+
+    level: max
+
+    checkMissingIterableValueType: false
+
+    checkGenericClassInNonGenericObjectType: false
+
+    ignoreErrors:
+        - '#Method NotificationChannels\\Expo\\Gateway\\ExpoGatewayUsingGuzzle::getPushTickets\(\) should return array but returns mixed.#'

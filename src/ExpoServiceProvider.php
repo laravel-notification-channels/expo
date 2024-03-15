@@ -1,38 +1,50 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace NotificationChannels\Expo;
 
-use GuzzleHttp\Client as GuzzleClient;
+use Illuminate\Contracts\Config\Repository;
+use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Notifications\ChannelManager;
 use Illuminate\Support\ServiceProvider;
+use InvalidArgumentException;
+use NotificationChannels\Expo\Gateway\ExpoGateway;
+use NotificationChannels\Expo\Gateway\ExpoGatewayUsingGuzzle;
 
-class ExpoServiceProvider extends ServiceProvider
+final class ExpoServiceProvider extends ServiceProvider
 {
     /**
-     * Bootstrap the application services.
+     * Register the Expo application services.
      */
-    public function boot()
+    public function register(): void
     {
-        $this->app->when(ExpoChannel::class)
-            ->needs(GuzzleClient::class)
-            ->give(function () {
-                $accessToken = config('expo.access_token');
-                if ($accessToken) {
-                    return new GuzzleClient(['headers' => ['Authorization' => "Bearer $accessToken"]]);
-                } else {
-                    return new GuzzleClient();
-                }
-            });
+        $this->app->bind(ExpoGateway::class, $this->createExpoGateway(...));
+        $this->app->singleton(ExpoChannel::class);
 
-        $this->publishes([
-            realpath(__DIR__.'/../config/expo.php') => config_path('expo.php'),
-        ], 'config');
+        $this->callAfterResolving(ChannelManager::class, $this->extendManager(...));
     }
 
     /**
-     * Register the application services.
+     * Create a new ExpoGateway instance.
      */
-    public function register()
+    private function createExpoGateway(Application $app): ExpoGatewayUsingGuzzle
     {
-        $this->mergeConfigFrom(realpath(__DIR__.'/../config/expo.php'), 'expo');
+        /** @var Repository $config */
+        $config = $app->make(Repository::class);
+
+        $accessToken = $config->get('services.expo.access_token');
+
+        if (! is_null($accessToken) && ! is_string($accessToken)) {
+            throw new InvalidArgumentException('The provided access token is not a valid Expo Access Token.');
+        }
+
+        return new ExpoGatewayUsingGuzzle($accessToken);
+    }
+
+    /**
+     * Extend the ChannelManager with ExpoChannel.
+     */
+    private function extendManager(ChannelManager $cm): void
+    {
+        $cm->extend(ExpoChannel::NAME, static fn (Application $app) => $app->make(ExpoChannel::class));
     }
 }

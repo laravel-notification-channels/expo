@@ -1,23 +1,20 @@
-<?php
+<?php declare(strict_types=1);
 
-namespace NotificationChannels\Expo\Test;
+namespace Tests;
 
-use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
 use NotificationChannels\Expo\ExpoServiceProvider;
-use Orchestra\Testbench\TestCase as Orchestra;
+use NotificationChannels\Expo\Gateway\ExpoGateway;
+use Orchestra\Testbench\TestCase as TestCaseBase;
 
-class TestCase extends Orchestra
+abstract class TestCase extends TestCaseBase
 {
-    use MockeryPHPUnitIntegration;
-
-    /**
-     * @param  $app
-     * @return array
-     */
-    protected function getPackageProviders($app)
+    protected function defineEnvironment($app): void
     {
-        return [
-            ExpoServiceProvider::class,
-        ];
+        $app->bind(ExpoGateway::class, InMemoryExpoGateway::class);
+    }
+
+    protected function getPackageProviders($app): array
+    {
+        return [ExpoServiceProvider::class];
     }
 }
