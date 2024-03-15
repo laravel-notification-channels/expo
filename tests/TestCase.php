@@ -11,7 +11,7 @@ class TestCase extends Orchestra
     use MockeryPHPUnitIntegration;
 
     /**
-     * @param $app
+     * @param  $app
      * @return array
      */
     protected function getPackageProviders($app)

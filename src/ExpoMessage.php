@@ -242,13 +242,13 @@ class ExpoMessage
     public function toArray(): array
     {
         $message = [
-            'title'     =>  $this->title,
-            'body'      =>  $this->body,
-            'sound'     =>  $this->sound,
-            'badge'     =>  $this->badge,
-            'ttl'       =>  $this->ttl,
-            'data'      =>  $this->jsonData,
-            'priority'  =>  $this->priority,
+            'title' => $this->title,
+            'body' => $this->body,
+            'sound' => $this->sound,
+            'badge' => $this->badge,
+            'ttl' => $this->ttl,
+            'data' => $this->jsonData,
+            'priority' => $this->priority,
         ];
         if (! empty($this->subtitle)) {
             $message['subtitle'] = $this->subtitle;

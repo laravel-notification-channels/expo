@@ -10,7 +10,7 @@ class CouldNotSendNotification extends \Exception
     /**
      * Expo responded with an error.
      *
-     * @param $response
+     * @param  $response
      * @return static
      */
     public static function serviceRespondedWithAnError($response)
