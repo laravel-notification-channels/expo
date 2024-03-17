@@ -1,29 +1,34 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<phpunit bootstrap="vendor/autoload.php"
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/10.1/phpunit.xsd"
          backupGlobals="false"
-         backupStaticAttributes="false"
+         bootstrap="vendor/autoload.php"
          colors="true"
-         verbose="true"
-         convertErrorsToExceptions="true"
-         convertNoticesToExceptions="true"
-         convertWarningsToExceptions="true"
          processIsolation="false"
-         stopOnFailure="false">
+         stopOnFailure="false"
+         executionOrder="random"
+         failOnWarning="true"
+         failOnRisky="true"
+         failOnEmptyTestSuite="true"
+         beStrictAboutOutputDuringTests="true"
+         cacheDirectory=".phpunit.cache"
+         backupStaticProperties="false"
+>
     <testsuites>
         <testsuite name="Expo Test Suite">
-            <directory>tests</directory>
+            <directory suffix="Test.php">tests</directory>
         </testsuite>
     </testsuites>
-    <filter>
-        <whitelist>
-            <directory suffix=".php">src/</directory>
-        </whitelist>
-    </filter>
-    <logging>
-        <log type="tap" target="build/report.tap"/>
-        <log type="junit" target="build/report.junit.xml"/>
-        <log type="coverage-html" target="build/coverage"/>
-        <log type="coverage-text" target="build/coverage.txt"/>
-        <log type="coverage-clover" target="build/logs/clover.xml"/>
-    </logging>
+
+    <groups>
+        <exclude>
+            <group>network</group>
+        </exclude>
+    </groups>
+
+    <php>
+        <server name="APP_KEY" value="base64:AuEJX3yhL8cAmAEkNBl8PkiylImllP9+vn67WS/Y0A0="/>
+        <server name="DB_CONNECTION" value="sqlite"/>
+        <server name="DB_DATABASE" value=":memory:"/>
+    </php>
 </phpunit>
