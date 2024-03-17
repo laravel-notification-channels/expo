@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Tests\Feature;
 
@@ -58,6 +60,7 @@ final class User extends Authenticatable
     use Notifiable;
 
     protected $casts = ['token' => ExpoPushToken::class];
+
     protected $guarded = [];
 
     public function routeNotificationForExpo(): ?ExpoPushToken

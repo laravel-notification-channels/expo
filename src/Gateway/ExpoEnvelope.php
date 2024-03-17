@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace NotificationChannels\Expo\Gateway;
 
@@ -14,7 +16,7 @@ final readonly class ExpoEnvelope implements Arrayable, Jsonable
     /**
      * Create a new ExpoEnvelope instance.
      *
-     * @param array<int, ExpoPushToken> $recipients
+     * @param  array<int, ExpoPushToken>  $recipients
      */
     private function __construct(public array $recipients, public ExpoMessage $message)
     {
@@ -45,7 +47,7 @@ final readonly class ExpoEnvelope implements Arrayable, Jsonable
     /**
      * Convert the ExpoEnvelope instance to its JSON representation.
      *
-     * @param int $options
+     * @param  int  $options
      */
     public function toJson($options = 0): string
     {

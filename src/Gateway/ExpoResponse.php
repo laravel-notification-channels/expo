@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace NotificationChannels\Expo\Gateway;
 
@@ -8,18 +10,22 @@ use NotificationChannels\Expo\ExpoError;
 final readonly class ExpoResponse
 {
     private const string FAILED = 'failed';
+
     private const string FATAL = 'fatal';
+
     private const string OK = 'ok';
 
     /**
      * Create a new ExpoResponse instance.
      */
-    private function __construct(private string $type, private array|string|null $context = null) {}
+    private function __construct(private string $type, private array|string|null $context = null)
+    {
+    }
 
     /**
      * Create a "failed" ExpoResponse instance.
      *
-     * @param $errors array<int, ExpoError>
+     * @param  $errors  array<int, ExpoError>
      */
     public static function failed(array $errors): self
     {

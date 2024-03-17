@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace NotificationChannels\Expo;
 
@@ -11,7 +13,9 @@ final readonly class ExpoError
         public ExpoErrorType $type,
         public ExpoPushToken $token,
         public string $message,
-    ) {}
+    ) {
+        //
+    }
 
     /**
      * @see __construct()
