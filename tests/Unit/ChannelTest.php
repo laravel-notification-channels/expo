@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Tests\Unit;
 
@@ -31,7 +33,7 @@ final class ChannelTest extends TestCase
         parent::setUp();
 
         $this->gateway = new InMemoryExpoGateway();
-        $this->events = new EventFake(new NullDispatcher(new Dispatcher())) ;
+        $this->events = new EventFake(new NullDispatcher(new Dispatcher()));
         $this->channel = new ExpoChannel($this->gateway, $this->events);
     }
 
@@ -70,7 +72,8 @@ final class ChannelTest extends TestCase
 
         $this->channel->send($notifiable, $notification);
 
-        $this->events->assertDispatched(NotificationFailed::class,
+        $this->events->assertDispatched(
+            NotificationFailed::class,
             static fn (NotificationFailed $event) => $event->channel === 'expo' && $event->data instanceof ExpoError
         );
     }
@@ -126,9 +129,13 @@ final class FoodWasDelivered extends Notification
     }
 }
 
-final class CarHasCrashed extends Notification {}
+final class CarHasCrashed extends Notification
+{
+}
 
-final class Guest {}
+final class Guest
+{
+}
 
 final class Customer
 {

@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace NotificationChannels\Expo\Gateway;
 
@@ -114,8 +116,7 @@ final readonly class ExpoGatewayUsingGuzzle implements ExpoGateway
     /**
      * Get an array of potential errors responded by the service.
      *
-     * @param $tokens array<int, ExpoPushToken>
-     *
+     * @param  $tokens  array<int, ExpoPushToken>
      * @return array<int, ExpoError>
      */
     private function getPotentialErrors(array $tokens, array $tickets): array

@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace NotificationChannels\Expo;
 
@@ -21,7 +23,9 @@ final readonly class ExpoChannel
     /**
      * Create a new channel instance.
      */
-    public function __construct(private ExpoGateway $gateway, private Dispatcher $events) {}
+    public function __construct(private ExpoGateway $gateway, private Dispatcher $events)
+    {
+    }
 
     /**
      * Send the notification to Expo's Push API.
