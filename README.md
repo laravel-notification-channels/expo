@@ -69,7 +69,8 @@ final class SuspiciousActivityDetected extends Notification
 }
 ```
 
-> **Note** Detailed explanation regarding the Expo Message Request Format can be found [here](#expo-message-request-format).
+> [!NOTE]
+> Detailed explanation regarding the Expo Message Request Format can be found [here](#expo-message-request-format).
 
 You can also apply conditionals to `ExpoMessage` without breaking the method chain:
 
@@ -105,9 +106,11 @@ final class User extends Authenticatable
 }
 ```
 
-> **Warning** No notifications will be sent in case of `null`.
+> [!IMPORTANT]
+> No notifications will be sent in case of `null`.
 
-> **Note** More info regarding the model cast can be found [here](#model-casting).
+> [!NOTE]
+> More info regarding the model cast can be found [here](#model-casting).
 
 #### Multicasting (multiple devices)
 
@@ -129,7 +132,8 @@ final class User extends Authenticatable
 }
 ```
 
-> **Warning** No notifications will be sent in case of an empty `Collection`.
+> [!IMPORTANT]
+> No notifications will be sent in case of an empty `Collection`.
 
 ### Sending
 
@@ -200,12 +204,12 @@ final class HandleFailedExpoNotifications
 The `NotificationFailed::$data` property will contain an instance of `ExpoError` which has the following properties:
 
 ```php
-final class ExpoError
+final readonly class ExpoError
 {
     private function __construct(
-        public readonly ExpoErrorType $type,
-        public readonly ExpoPushToken $token,
-        public readonly string $message,
+        public ExpoErrorType $type,
+        public ExpoPushToken $token,
+        public string $message,
     ) {}
 }
 ```
@@ -235,7 +239,7 @@ Sets the number to display in the badge on the app icon.
 badge(int $value)
 ```
 
-> **Note**
+> [!NOTE]
 > The value must be greater than or equal to 0.
 
 ### Body
@@ -247,7 +251,7 @@ body(string $value)
 text(string $value)
 ```
 
-> **Note**
+> [!NOTE]
 > The value must not be empty.
 
 ### Category ID
@@ -258,7 +262,7 @@ Sets the ID of the notification category that this notification is associated wi
 categoryId(string $value)
 ```
 
-> **Note**
+> [!NOTE]
 > The value must not be empty.
 
 ### Channel ID (Android)
@@ -269,7 +273,7 @@ Sets the ID of the Notification Channel through which to display this notificati
 channelId(string $value)
 ```
 
-> **Note**
+> [!NOTE]
 > The value must not be empty.
 
 ### JSON data
@@ -280,8 +284,8 @@ Sets the JSON data for the message.
 data(Arrayable|Jsonable|JsonSerializable|array $value)
 ```
 
-> **Warning**
-> We're compressing JSON payloads that exceed 1 KiB using Gzip (if `ext-zlib` is available). While you could technically send more than 4 KiB of data, this is not recommended.
+> [!WARNING]
+> We're compressing JSON payloads that exceed 1 KiB using Gzip (if [`ext-zlib`](https://www.php.net/manual/en/book.zlib.php) is available). While you could technically send more than 4 KiB of data, this is not recommended.
 
 ### Expiration
 
@@ -291,10 +295,10 @@ Sets the expiration time of the message. Same effect as TTL.
 expiresAt(DateTimeInterface|int $value)
 ```
 
-> **Warning**
+> [!WARNING]
 > `TTL` takes precedence if both are set.
 
-> **Note**
+> [!NOTE]
 > The value must be in the future.
 
 ### Mutable content (iOS)
@@ -313,7 +317,7 @@ Play the default notification sound when the recipient receives the notification
 playSound()
 ```
 
-> **Warning**
+> [!WARNING]
 > Custom sounds are not supported.
 
 ### Priority
@@ -327,7 +331,7 @@ normal()
 high()
 ```
 
-> **Note**
+> [!NOTE]
 > The value must be `default`, `normal` or `high`.
 
 ### Subtitle (iOS)
@@ -338,7 +342,7 @@ Sets the subtitle to display in the notification below the title.
 subtitle(string $value)
 ```
 
-> **Note**
+> [!NOTE]
 > The value must not be empty.
 
 ### Title
@@ -349,7 +353,7 @@ Set the title to display in the notification.
 title(string $value)
 ```
 
-> **Note**
+> [!NOTE]
 > The value must not be empty.
 
 ### TTL (Time to live)
@@ -361,10 +365,10 @@ ttl(int $value)
 expiresIn(int $value)
 ```
 
-> **Warning**
+> [!WARNING]
 > Takes precedence over `expiration` if both are set.
 
-> **Note**
+> [!NOTE]
 > The value must be greater than 0.
 
 ## Testing
