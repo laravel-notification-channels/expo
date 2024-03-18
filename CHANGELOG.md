@@ -2,7 +2,7 @@
 
 All notable changes to `expo` will be documented in this file
 
-## 2.0.0 - 2024-03-16
+## 2.0.0 - 2024-03-18
 
 - Channel revamp
 
