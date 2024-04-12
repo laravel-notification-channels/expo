@@ -23,7 +23,7 @@
 
 ## Installation
 
-You can install the package via composer:
+You can install the package via Composer:
 
 ```bash
 composer require laravel-notification-channels/expo
@@ -50,14 +50,16 @@ You can now use the `expo` channel in the `via()` method of your `Notification`s
 First things first, you need to have a [Notification](https://laravel.com/docs/9.x/notifications) that needs to be delivered to someone. Check out the [Laravel documentation](https://laravel.com/docs/9.x/notifications#generating-notifications) for more information on generating notifications. 
 
 ```php
-final class SuspiciousActivityDetected extends Notification
+use NotificationChannels\Expo\ExpoMessage;
+
+class SuspiciousActivityDetected extends Notification
 {
     public function toExpo($notifiable): ExpoMessage
     {
         return ExpoMessage::create('Suspicious Activity')
             ->body('Someone tried logging in to your account!')
             ->data($notifiable->only('email', 'id'))
-            ->expiresAt(Carbon::now()->addHour())
+            ->expiresAt(now()->addHour())
             ->priority('high')
             ->playSound();
     }
@@ -75,6 +77,8 @@ final class SuspiciousActivityDetected extends Notification
 You can also apply conditionals to `ExpoMessage` without breaking the method chain:
 
 ```php
+use NotificationChannels\Expo\ExpoMessage;
+
 public function toExpo($notifiable): ExpoMessage
 {
     return ExpoMessage::create('Suspicious Activity')
@@ -93,11 +97,23 @@ Next, you will have to set a `routeNotificationForExpo()` method in your `Notifi
 The method **must** return either an instance of `ExpoPushToken` or `null`.  An example:
 
 ```php
-final class User extends Authenticatable
+use NotificationChannels\Expo\ExpoPushToken;
+
+class User extends Authenticatable
 {
     use Notifiable;
 
-    protected $casts = ['expo_token' => ExpoPushToken::class];
+    /**
+     * Get the attributes that should be cast.
+     *
+     * @return array<string, string>
+     */
+    protected function casts(): array
+    {
+        return [
+            'expo_token' => ExpoPushToken::class
+        ];
+    }
 
     public function routeNotificationForExpo(): ?ExpoPushToken
     {
@@ -118,7 +134,9 @@ The method **must** return an `array<int, ExpoPushToken>` or `Collection<int, Ex
 the specific implementation depends on your use case. An example:
 
 ```php
-final class User extends Authenticatable
+use Illuminate\Database\Eloquent\Collection;
+
+class User extends Authenticatable
 {
     use Notifiable;
 
@@ -148,7 +166,9 @@ $user->notify(new SuspiciousActivityDetected());
 You ought to have an HTTP endpoint that associates a given `ExpoPushToken` with an authenticated `User` so that you can deliver push notifications. For this reason, we're also providing a custom validation `ExpoPushTokenRule` class which you can use to protect your endpoints. An example:
 
 ```php
-final class StoreDeviceRequest extends FormRequest
+use NotificationChannels\Expo\ExpoPushToken;
+
+class StoreDeviceRequest extends FormRequest
 {
     public function rules(): array
     {
@@ -165,11 +185,23 @@ final class StoreDeviceRequest extends FormRequest
 The `ExpoChannel` expects you to return an instance of `ExpoPushToken` from your `Notifiable`s. You can easily achieve this by applying the `ExpoPushToken` as a custom model cast. An example:
 
 ```php
-final class User extends Authenticatable
+use NotificationChannels\Expo\AsExpoPushToken;
+
+class User extends Authenticatable
 {
     use Notifiable;
 
-    protected $casts = ['expo_token' => AsExpoPushToken::class];
+    /**
+     * Get the attributes that should be cast.
+     *
+     * @return array<string, string>
+     */
+    protected function casts(): array
+    {
+        return [
+            'expo_token' => AsExpoPushToken::class
+        ];
+    }
 }
 ```
 
@@ -182,7 +214,9 @@ Unfortunately, Laravel does not provide an [OOB solution](https://github.com/lar
 You can register an event listener that listens to this event and handles the appropriate errors. An example:
 
 ```php
-final class HandleFailedExpoNotifications
+use Illuminate\Notifications\Events\NotificationFailed;
+
+class HandleFailedExpoNotifications
 {
     public function handle(NotificationFailed $event)
     {
@@ -204,6 +238,8 @@ final class HandleFailedExpoNotifications
 The `NotificationFailed::$data` property will contain an instance of `ExpoError` which has the following properties:
 
 ```php
+namespace NotificationChannels\Expo;
+
 final readonly class ExpoError
 {
     private function __construct(
