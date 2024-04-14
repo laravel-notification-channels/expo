@@ -185,7 +185,7 @@ class StoreDeviceRequest extends FormRequest
 The `ExpoChannel` expects you to return an instance of `ExpoPushToken` from your `Notifiable`s. You can easily achieve this by applying the `ExpoPushToken` as a custom model cast. An example:
 
 ```php
-use NotificationChannels\Expo\AsExpoPushToken;
+use NotificationChannels\Expo\ExpoPushToken;
 
 class User extends Authenticatable
 {
@@ -199,7 +199,7 @@ class User extends Authenticatable
     protected function casts(): array
     {
         return [
-            'expo_token' => AsExpoPushToken::class
+            'expo_token' => ExpoPushToken::class
         ];
     }
 }
