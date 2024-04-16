@@ -9,11 +9,8 @@ final readonly class ExpoError
     /**
      * Create an ExpoError instance.
      */
-    private function __construct(
-        public ExpoErrorType $type,
-        public ExpoPushToken $token,
-        public string $message,
-    ) {
+    private function __construct(public ExpoErrorType $type, public ExpoPushToken $token, public string $message)
+    {
         //
     }
 

@@ -25,6 +25,7 @@ final readonly class ExpoChannel
      */
     public function __construct(private ExpoGateway $gateway, private Dispatcher $events)
     {
+        //
     }
 
     /**

@@ -20,6 +20,7 @@ final readonly class ExpoResponse
      */
     private function __construct(private string $type, private array|string|null $context = null)
     {
+        //
     }
 
     /**
