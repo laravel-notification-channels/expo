@@ -15,14 +15,14 @@
         "php": "~8.3",
         "ext-json": "*",
         "guzzlehttp/guzzle": "^7.1",
-        "illuminate/contracts": "^11.0",
-        "illuminate/notifications": "^11.0",
-        "illuminate/support": "^11.0"
+        "illuminate/contracts": "^11.0|^12.0",
+        "illuminate/notifications": "^11.0|^12.0",
+        "illuminate/support": "^11.0|^12.0"
     },
     "require-dev": {
-        "larastan/larastan": "^2.0",
+        "larastan/larastan": "^3.0",
         "laravel/pint": "^1.0",
-        "orchestra/testbench": "^9.0",
+        "orchestra/testbench": "^9.11",
         "phpunit/phpunit": "^11.0"
     },
     "suggest": {
