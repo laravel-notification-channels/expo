@@ -183,6 +183,26 @@ final class ExpoMessageTest extends TestCase
     }
 
     #[Test]
+    public function it_can_set_the_content_available(): void
+    {
+        $msg = ExpoMessage::create()->contentAvailable();
+
+        ['_contentAvailable' => $contentAvailable] = $msg->toArray();
+
+        $this->assertTrue($contentAvailable);
+    }
+
+    #[Test]
+    public function it_can_set_the_content_available_to_false(): void
+    {
+        $msg = ExpoMessage::create()->contentAvailable(false);
+
+        ['_contentAvailable' => $contentAvailable] = $msg->toArray();
+
+        $this->assertFalse($contentAvailable);
+    }
+
+    #[Test]
     public function it_can_set_the_priority_to_normal(): void
     {
         $msgA = ExpoMessage::create()->normal();
@@ -312,6 +332,28 @@ final class ExpoMessageTest extends TestCase
         ], $arrayable);
 
         $this->assertSame($data, $jsonSerializable);
+    }
+
+    #[Test]
+    public function it_includes_content_available_in_array_when_set(): void
+    {
+        $msg = ExpoMessage::create('Background', 'Notification')
+            ->contentAvailable();
+
+        $array = $msg->toArray();
+
+        $this->assertArrayHasKey('_contentAvailable', $array);
+        $this->assertTrue($array['_contentAvailable']);
+    }
+
+    #[Test]
+    public function it_excludes_content_available_from_array_when_not_set(): void
+    {
+        $msg = ExpoMessage::create('Regular', 'Notification');
+
+        $array = $msg->toArray();
+
+        $this->assertArrayNotHasKey('_contentAvailable', $array);
     }
 }
 

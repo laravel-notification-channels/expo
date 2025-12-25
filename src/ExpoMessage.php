@@ -114,6 +114,16 @@ final class ExpoMessage implements Arrayable, JsonSerializable
     private bool $mutableContent = false;
 
     /**
+     * When this is set to true, the notification will cause the iOS app to start in the background to run a background task.
+     * Your app needs to be configured to support this.
+     *
+     * @see https://docs.expo.dev/push-notifications/sending-notifications/#message-request-format Content Available
+     *
+     * iOS only.
+     */
+    private ?bool $contentAvailable = null;
+
+    /**
      * Create a new ExpoMessage instance.
      */
     private function __construct(string $title, string $body)
@@ -293,6 +303,18 @@ final class ExpoMessage implements Arrayable, JsonSerializable
     }
 
     /**
+     * Set whether the notification should cause the iOS app to start in the background.
+     *
+     * @see ExpoMessage::$contentAvailable
+     */
+    public function contentAvailable(bool $value = true): self
+    {
+        $this->contentAvailable = $value;
+
+        return $this;
+    }
+
+    /**
      * Set the delivery priority of the message to 'normal'.
      *
      * @see ExpoMessage::$priority
@@ -411,6 +433,14 @@ final class ExpoMessage implements Arrayable, JsonSerializable
      */
     public function toArray(): array
     {
-        return array_filter(get_object_vars($this), filled(...));
+        $vars = get_object_vars($this);
+
+        // Rename contentAvailable to _contentAvailable for API compatibility
+        if (array_key_exists('contentAvailable', $vars)) {
+            $vars['_contentAvailable'] = $vars['contentAvailable'];
+            unset($vars['contentAvailable']);
+        }
+
+        return array_filter($vars, filled(...));
     }
 }
