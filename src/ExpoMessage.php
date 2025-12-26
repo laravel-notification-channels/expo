@@ -121,7 +121,7 @@ final class ExpoMessage implements Arrayable, JsonSerializable
      *
      * iOS only.
      */
-    private ?bool $contentAvailable = null;
+    private ?bool $_contentAvailable = null;
 
     /**
      * Create a new ExpoMessage instance.
@@ -305,11 +305,11 @@ final class ExpoMessage implements Arrayable, JsonSerializable
     /**
      * Set whether the notification should cause the iOS app to start in the background.
      *
-     * @see ExpoMessage::$contentAvailable
+     * @see ExpoMessage::$_contentAvailable
      */
     public function contentAvailable(bool $value = true): self
     {
-        $this->contentAvailable = $value;
+        $this->_contentAvailable = $value;
 
         return $this;
     }
@@ -433,14 +433,6 @@ final class ExpoMessage implements Arrayable, JsonSerializable
      */
     public function toArray(): array
     {
-        $vars = get_object_vars($this);
-
-        // Rename contentAvailable to _contentAvailable for API compatibility
-        if (array_key_exists('contentAvailable', $vars)) {
-            $vars['_contentAvailable'] = $vars['contentAvailable'];
-            unset($vars['contentAvailable']);
-        }
-
-        return array_filter($vars, filled(...));
+        return array_filter(get_object_vars($this), filled(...));
     }
 }
