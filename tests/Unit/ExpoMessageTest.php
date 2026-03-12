@@ -245,6 +245,25 @@ final class ExpoMessageTest extends TestCase
     }
 
     #[Test]
+    public function it_can_set_rich_content(): void
+    {
+        $msg = ExpoMessage::create()->richContent($value = 'https://example.com/image.png');
+
+        ['richContent' => $richContent] = $msg->toArray();
+
+        $this->assertSame(['image' => $value], $richContent);
+    }
+
+    #[Test]
+    public function it_doesnt_allow_an_empty_rich_content_image_url(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('The image URL must not be empty.');
+
+        ExpoMessage::create()->richContent('');
+    }
+
+    #[Test]
     public function it_can_set_a_subtitle(): void
     {
         $msg = ExpoMessage::create()->subtitle($value = "You can't see me");

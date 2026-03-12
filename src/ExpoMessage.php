@@ -124,6 +124,15 @@ final class ExpoMessage implements Arrayable, JsonSerializable
     private ?bool $_contentAvailable = null;
 
     /**
+     * Rich content to display in the notification, such as an image.
+     * The image must be a publicly accessible URL.
+     * On iOS, displaying the image requires a Notification Service Extension in your app.
+     *
+     * @see https://docs.expo.dev/push-notifications/sending-notifications/#message-request-format
+     */
+    private ?array $richContent = null;
+
+    /**
      * Create a new ExpoMessage instance.
      */
     private function __construct(string $title, string $body)
@@ -354,6 +363,26 @@ final class ExpoMessage implements Arrayable, JsonSerializable
         }
 
         $this->priority = $value;
+
+        return $this;
+    }
+
+    /**
+     * Set rich content to display in the notification.
+     * Currently, only an image URL is supported.
+     *
+     * @throws InvalidArgumentException()
+     *
+     * @see ExpoMessage::$richContent
+     * @see https://docs.expo.dev/push-notifications/sending-notifications/#message-request-format
+     */
+    public function richContent(string $imageUrl): self
+    {
+        if (empty($imageUrl)) {
+            throw new InvalidArgumentException('The image URL must not be empty.');
+        }
+
+        $this->richContent = ['image' => $imageUrl];
 
         return $this;
     }
