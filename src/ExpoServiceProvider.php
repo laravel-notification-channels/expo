@@ -45,8 +45,11 @@ final class ExpoServiceProvider extends ServiceProvider
     /**
      * Extend the ChannelManager with ExpoChannel.
      */
-    private function extendManager(ChannelManager $cm): void
+    private function extendManager(ChannelManager $manager): void
     {
-        $cm->extend(ExpoChannel::NAME, static fn (Application $app) => $app->make(ExpoChannel::class));
+        $manager->extend(
+            ExpoChannel::NAME,
+            fn (Application $app) => $app->make(ExpoChannel::class)
+        );
     }
 }

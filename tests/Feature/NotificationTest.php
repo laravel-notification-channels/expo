@@ -43,12 +43,14 @@ final class NotificationTest extends TestCase
     #[Test]
     public function test_listeners_are_invoked_on_failure(): void
     {
-        Event::listen(NotificationFailed::class, function ($event) {
-            $this->assertSame('expo', $event->channel);
-            $this->assertInstanceOf(ExpoError::class, $event->data);
-        });
+        Event::fake(NotificationFailed::class);
 
         $this->patchJson('notification/send', ['token' => 'ExpoPushToken[834VY1z7Yg2kQPSVsC8TFp]']);
+
+        Event::assertDispatched(NotificationFailed::class, function ($event) {
+            return $event->channel === 'expo'
+                && $event->data instanceof ExpoError;
+        });
     }
 }
 
