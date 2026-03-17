@@ -32,16 +32,16 @@ final class ChannelTest extends TestCase
     {
         parent::setUp();
 
-        $this->gateway = new InMemoryExpoGateway();
-        $this->events = new EventFake(new NullDispatcher(new Dispatcher()));
+        $this->gateway = new InMemoryExpoGateway;
+        $this->events = new EventFake(new NullDispatcher(new Dispatcher));
         $this->channel = new ExpoChannel($this->gateway, $this->events);
     }
 
     #[Test]
     public function it_can_send_a_push_notification(): void
     {
-        $notifiable = new Customer();
-        $notification = new FoodWasDelivered();
+        $notifiable = new Customer;
+        $notification = new FoodWasDelivered;
 
         $this->gateway->assertNothingSent();
 
@@ -59,14 +59,14 @@ final class ChannelTest extends TestCase
 
         $this->gateway->bail('Something went wrong.');
 
-        $this->channel->send(new Customer(), new FoodWasDelivered());
+        $this->channel->send(new Customer, new FoodWasDelivered);
     }
 
     #[Test]
     public function it_dispatches_failed_events_when_something_goes_wrong(): void
     {
-        $notifiable = new FraudulentCustomer();
-        $notification = new FoodWasDelivered();
+        $notifiable = new FraudulentCustomer;
+        $notification = new FoodWasDelivered;
 
         $this->events->assertNothingDispatched();
 
@@ -81,8 +81,8 @@ final class ChannelTest extends TestCase
     #[Test]
     public function it_doesnt_send_any_notifications_if_the_token_is_null(): void
     {
-        $notifiable = new NullCustomer();
-        $notification = new FoodWasDelivered();
+        $notifiable = new NullCustomer;
+        $notification = new FoodWasDelivered;
 
         $this->channel->send($notifiable, $notification);
 
@@ -92,8 +92,8 @@ final class ChannelTest extends TestCase
     #[Test]
     public function it_doesnt_send_any_notifications_if_the_token_collection_is_empty(): void
     {
-        $notifiable = new EmptyCollectionCustomer();
-        $notification = new FoodWasDelivered();
+        $notifiable = new EmptyCollectionCustomer;
+        $notification = new FoodWasDelivered;
 
         $this->channel->send($notifiable, $notification);
 
@@ -106,7 +106,7 @@ final class ChannelTest extends TestCase
         $this->expectException(CouldNotSendNotification::class);
         $this->expectExceptionMessage('Notification is missing the toExpo method.');
 
-        $this->channel->send(new Customer(), new CarHasCrashed());
+        $this->channel->send(new Customer, new CarHasCrashed);
     }
 
     #[Test]
@@ -115,7 +115,7 @@ final class ChannelTest extends TestCase
         $this->expectException(CouldNotSendNotification::class);
         $this->expectExceptionMessage('You must provide an instance of Notifiable.');
 
-        $this->channel->send(new Guest(), new FoodWasDelivered());
+        $this->channel->send(new Guest, new FoodWasDelivered);
     }
 }
 
@@ -129,13 +129,9 @@ final class FoodWasDelivered extends Notification
     }
 }
 
-final class CarHasCrashed extends Notification
-{
-}
+final class CarHasCrashed extends Notification {}
 
-final class Guest
-{
-}
+final class Guest {}
 
 final class Customer
 {

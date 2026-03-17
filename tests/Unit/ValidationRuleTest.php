@@ -50,6 +50,6 @@ final class ValidationRuleTest extends TestCase
 
     private function trans(): Translator
     {
-        return new Translator(new ArrayLoader(), 'en');
+        return new Translator(new ArrayLoader, 'en');
     }
 }

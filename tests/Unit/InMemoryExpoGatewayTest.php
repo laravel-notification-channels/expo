@@ -48,6 +48,6 @@ final class InMemoryExpoGatewayTest extends TestCase
 
     protected function getInstance(): ExpoGateway
     {
-        return new InMemoryExpoGateway();
+        return new InMemoryExpoGateway;
     }
 }

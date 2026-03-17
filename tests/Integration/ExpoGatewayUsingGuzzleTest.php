@@ -17,6 +17,6 @@ final class ExpoGatewayUsingGuzzleTest extends TestCase
 
     protected function getInstance(): ExpoGateway
     {
-        return new ExpoGatewayUsingGuzzle();
+        return new ExpoGatewayUsingGuzzle;
     }
 }
