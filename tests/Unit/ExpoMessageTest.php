@@ -109,9 +109,9 @@ final class ExpoMessageTest extends TestCase
     public function it_can_set_the_json_data(): void
     {
         $msgA = ExpoMessage::create()->data($value = ['laravel' => 'framework']);
-        $msgB = ExpoMessage::create()->data(new TestArrayable());
-        $msgC = ExpoMessage::create()->data(new TestJsonable());
-        $msgD = ExpoMessage::create()->data(new TestJsonSerializable());
+        $msgB = ExpoMessage::create()->data(new TestArrayable);
+        $msgC = ExpoMessage::create()->data(new TestJsonable);
+        $msgD = ExpoMessage::create()->data(new TestJsonSerializable);
 
         ['data' => $dataA] = $msgA->toArray();
         ['data' => $dataB] = $msgB->toArray();

@@ -24,7 +24,7 @@ final class NotificationTest extends TestCase
         $router->patch('notification/send', static function (Request $request) {
             $user = new User($request->only('token'));
 
-            $user->notify(new PartnerHasReplied());
+            $user->notify(new PartnerHasReplied);
 
             return ['message' => 'ok'];
         });

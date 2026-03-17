@@ -28,8 +28,8 @@ final class CastingTest extends TestCase
     #[Test]
     public function it_can_set_an_expo_push_token_on_an_attribute(): void
     {
-        $user = new User();
-        $notifiable = new Notifiable();
+        $user = new User;
+        $notifiable = new Notifiable;
 
         $user->expo_token = $token = 'ExponentPushToken[FtT1dBIc5Wp92HEGuJUhL4]';
         $notifiable->expo_token = $token;
