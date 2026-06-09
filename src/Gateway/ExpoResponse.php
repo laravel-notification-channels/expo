@@ -18,7 +18,7 @@ final readonly class ExpoResponse
     /**
      * Create a new ExpoResponse instance.
      *
-     * @param  array<int, ExpoError>|string|null  $context
+     * @param  array<int, ExpoError>|array<int, string>|string|null  $context
      */
     private function __construct(private string $type, private array|string|null $context = null)
     {
@@ -45,10 +45,12 @@ final readonly class ExpoResponse
 
     /**
      * Create an "ok" ExpoResponse instance.
+     *
+     * @param  array<int, string>  $tickets  recipient index → Expo ticket UUID
      */
-    public static function ok(): self
+    public static function ok(array $tickets = []): self
     {
-        return new self(self::OK);
+        return new self(self::OK, $tickets);
     }
 
     /**
@@ -56,7 +58,28 @@ final readonly class ExpoResponse
      */
     public function errors(): array
     {
-        return is_array($this->context) ? $this->context : [];
+        if ($this->type !== self::FAILED || ! is_array($this->context)) {
+            return [];
+        }
+
+        /** @var array<int, ExpoError> */
+        return $this->context;
+    }
+
+    /**
+     * Return the ticket IDs of successfully accepted pushes.
+     *
+     * @return array<int, string> map of recipient index → Expo ticket UUID,
+     *                            matching the order of $envelope->recipients
+     */
+    public function tickets(): array
+    {
+        if ($this->type !== self::OK || ! is_array($this->context)) {
+            return [];
+        }
+
+        /** @var array<int, string> */
+        return $this->context;
     }
 
     public function isFatal(): bool

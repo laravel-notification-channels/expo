@@ -17,6 +17,8 @@ final class InMemoryExpoGateway implements ExpoGateway
 {
     public const string VALID_TOKEN = 'ExponentPushToken[FtT1dBIc5Wp92HEGuJUhL4]';
 
+    public const string SECOND_VALID_TOKEN = 'ExponentPushToken[GuU2eCJd6Xq03IFHvKViM5]';
+
     private ?ExpoEnvelope $envelope = null;
 
     private ?string $shouldBail = null;
@@ -49,14 +51,22 @@ final class InMemoryExpoGateway implements ExpoGateway
         }
 
         $errors = [];
+        $tickets = [];
 
-        foreach ($envelope->recipients as $token) {
-            if (! $token->equals(self::VALID_TOKEN)) {
+        foreach ($envelope->recipients as $idx => $token) {
+            if ($token->equals(self::VALID_TOKEN) || $token->equals(self::SECOND_VALID_TOKEN)) {
+                $tickets[$idx] = "ticket-{$idx}";
+            } else {
                 $errors[] = $this->newDeviceError($token);
             }
         }
 
-        return count($errors) ? ExpoResponse::failed($errors) : ExpoResponse::ok();
+        return count($errors) ? ExpoResponse::failed($errors) : ExpoResponse::ok($tickets);
+    }
+
+    public function getReceipts(array $ticketIds): array
+    {
+        return [];
     }
 
     private function newDeviceError(ExpoPushToken $token): ExpoError

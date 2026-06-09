@@ -5,8 +5,10 @@ declare(strict_types=1);
 namespace NotificationChannels\Expo\Gateway;
 
 use GuzzleHttp\Client;
+use GuzzleHttp\HandlerStack;
 use GuzzleHttp\RequestOptions;
 use Illuminate\Support\Arr;
+use NotificationChannels\Expo\Exceptions\CouldNotGetReceipts;
 use NotificationChannels\Expo\ExpoError;
 use NotificationChannels\Expo\ExpoErrorType;
 use NotificationChannels\Expo\ExpoPushToken;
@@ -19,7 +21,12 @@ final readonly class ExpoGatewayUsingGuzzle implements ExpoGateway
     /**
      * Expo's Push API URL.
      */
-    private const string BASE_URL = 'https://exp.host/--/api/v2/push/send';
+    private const string SEND_URL = 'https://exp.host/--/api/v2/push/send';
+
+    /**
+     * Expo's Push Receipts API URL.
+     */
+    private const string RECEIPTS_URL = 'https://exp.host/--/api/v2/push/getReceipts';
 
     /**
      * OK status code.
@@ -44,9 +51,15 @@ final readonly class ExpoGatewayUsingGuzzle implements ExpoGateway
     /**
      * Create a new ExpoClient instance.
      */
-    public function __construct(#[SensitiveParameter] ?string $accessToken = null)
+    public function __construct(#[SensitiveParameter] ?string $accessToken = null, ?HandlerStack $handler = null)
     {
-        $this->http = new Client([RequestOptions::HEADERS => $this->getDefaultHeaders($accessToken)]);
+        $config = [RequestOptions::HEADERS => $this->getDefaultHeaders($accessToken)];
+
+        if ($handler !== null) {
+            $config['handler'] = $handler;
+        }
+
+        $this->http = new Client($config);
     }
 
     /**
@@ -56,7 +69,7 @@ final readonly class ExpoGatewayUsingGuzzle implements ExpoGateway
     {
         [$headers, $body] = $this->compressUsingGzip($envelope->toJson());
 
-        $response = $this->http->post(self::BASE_URL, [
+        $response = $this->http->post(self::SEND_URL, [
             RequestOptions::BODY => $body,
             RequestOptions::HEADERS => $headers,
             RequestOptions::HTTP_ERRORS => false,
@@ -69,7 +82,47 @@ final readonly class ExpoGatewayUsingGuzzle implements ExpoGateway
         $tickets = $this->getPushTickets($response);
         $errors = $this->getPotentialErrors($envelope->recipients, $tickets);
 
-        return count($errors) ? ExpoResponse::failed($errors) : ExpoResponse::ok();
+        if (count($errors)) {
+            return ExpoResponse::failed($errors);
+        }
+
+        return ExpoResponse::ok($this->collectTicketIds($tickets));
+    }
+
+    /**
+     * Fetch delivery receipts for previously-sent tickets.
+     *
+     * @param  array<int, string>  $ticketIds
+     * @return array<string, array{status: string, message?: string, details?: array<string, mixed>}>
+     *
+     * @throws CouldNotGetReceipts
+     */
+    public function getReceipts(array $ticketIds): array
+    {
+        if ($ticketIds === []) {
+            return [];
+        }
+
+        $response = $this->http->post(self::RECEIPTS_URL, [
+            RequestOptions::JSON => ['ids' => $ticketIds],
+            RequestOptions::HTTP_ERRORS => false,
+        ]);
+
+        if ($response->getStatusCode() !== self::HTTP_OK) {
+            throw CouldNotGetReceipts::becauseTheServiceRespondedWithAnError(
+                (string) $response->getBody()
+            );
+        }
+
+        /** @var array<string, mixed> $body */
+        $body = json_decode((string) $response->getBody(), true);
+
+        if (! is_array($body['data'] ?? null)) {
+            return [];
+        }
+
+        /** @var array<string, array{status: string, message?: string, details?: array<string, mixed>}> */
+        return $body['data'];
     }
 
     /**
@@ -115,6 +168,25 @@ final readonly class ExpoGatewayUsingGuzzle implements ExpoGateway
         }
 
         return $headers;
+    }
+
+    /**
+     * Collect successful push ticket IDs indexed by recipient position.
+     *
+     * @param  array<int, array<string, mixed>>  $tickets
+     * @return array<int, string>
+     */
+    private function collectTicketIds(array $tickets): array
+    {
+        $ids = [];
+
+        foreach ($tickets as $idx => $ticket) {
+            if (($ticket['status'] ?? null) === 'ok' && is_string($id = $ticket['id'] ?? null)) {
+                $ids[$idx] = $id;
+            }
+        }
+
+        return $ids;
     }
 
     /**

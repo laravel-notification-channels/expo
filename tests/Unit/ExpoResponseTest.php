@@ -44,5 +44,24 @@ final class ExpoResponseTest extends TestCase
         $this->assertFalse($response->isFatal());
         $this->assertSame('', $response->message());
         $this->assertSame([], $response->errors());
+        $this->assertSame([], $response->tickets());
+    }
+
+    #[Test]
+    public function tickets_are_returned_from_ok_response(): void
+    {
+        $response = ExpoResponse::ok($tickets = ['abc', 'def']);
+
+        $this->assertTrue($response->isOk());
+        $this->assertSame($tickets, $response->tickets());
+        $this->assertSame([], $response->errors());
+        $this->assertSame('', $response->message());
+    }
+
+    #[Test]
+    public function tickets_are_empty_for_non_ok_responses(): void
+    {
+        $this->assertSame([], ExpoResponse::failed([])->tickets());
+        $this->assertSame([], ExpoResponse::fatal('boom')->tickets());
     }
 }
