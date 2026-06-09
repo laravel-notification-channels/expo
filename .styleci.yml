@@ -1,1 +1,4 @@
 preset: laravel
+
+enabled:
+    - single_line_empty_body
