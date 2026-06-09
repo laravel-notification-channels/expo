@@ -11,6 +11,7 @@ use Illuminate\Notifications\Events\NotificationFailed;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Notifications\Notification;
 use Illuminate\Support\Testing\Fakes\EventFake;
+use NotificationChannels\Expo\Events\ExpoNotificationSent;
 use NotificationChannels\Expo\Exceptions\CouldNotSendNotification;
 use NotificationChannels\Expo\ExpoChannel;
 use NotificationChannels\Expo\ExpoError;
@@ -117,6 +118,58 @@ final class ChannelTest extends TestCase
 
         $this->channel->send(new Guest, new FoodWasDelivered);
     }
+
+    #[Test]
+    public function expo_notification_sent_event_is_dispatched_with_token_ticket_map(): void
+    {
+        $notifiable = new TwoTokenCustomer;
+        $notification = new FoodWasDelivered;
+
+        $this->channel->send($notifiable, $notification);
+
+        $this->events->assertDispatched(
+            ExpoNotificationSent::class,
+            static function (ExpoNotificationSent $event) use ($notifiable, $notification): bool {
+                return $event->notifiable === $notifiable
+                    && $event->notification === $notification
+                    && $event->tickets === [
+                        (string) ExpoPushToken::make(InMemoryExpoGateway::VALID_TOKEN) => 'ticket-0',
+                        (string) ExpoPushToken::make(InMemoryExpoGateway::SECOND_VALID_TOKEN) => 'ticket-1',
+                    ];
+            }
+        );
+    }
+
+    #[Test]
+    public function sent_event_carries_the_original_notification_instance(): void
+    {
+        $notifiable = new Customer;
+        $notification = new FoodWasDelivered;
+
+        $this->channel->send($notifiable, $notification);
+
+        $this->events->assertDispatched(
+            ExpoNotificationSent::class,
+            static fn (ExpoNotificationSent $event) => $event->notification === $notification
+        );
+    }
+
+    #[Test]
+    public function sent_event_is_not_dispatched_when_response_is_failed_or_fatal(): void
+    {
+        $this->channel->send(new FraudulentCustomer, new FoodWasDelivered);
+
+        $this->events->assertNotDispatched(ExpoNotificationSent::class);
+
+        try {
+            $this->gateway->bail('Boom');
+            $this->channel->send(new Customer, new FoodWasDelivered);
+        } catch (CouldNotSendNotification) {
+            // expected
+        }
+
+        $this->events->assertNotDispatched(ExpoNotificationSent::class);
+    }
 }
 
 final class FoodWasDelivered extends Notification
@@ -174,5 +227,19 @@ final class NullCustomer
     public function routeNotificationForExpo(): null
     {
         return null;
+    }
+}
+
+final class TwoTokenCustomer
+{
+    use Notifiable;
+
+    /** @return array<int, ExpoPushToken> */
+    public function routeNotificationForExpo(): array
+    {
+        return [
+            ExpoPushToken::make(InMemoryExpoGateway::VALID_TOKEN),
+            ExpoPushToken::make(InMemoryExpoGateway::SECOND_VALID_TOKEN),
+        ];
     }
 }

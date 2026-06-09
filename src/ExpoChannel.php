@@ -9,6 +9,7 @@ use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Notifications\Events\NotificationFailed;
 use Illuminate\Notifications\Notification;
 use Illuminate\Support\Arr;
+use NotificationChannels\Expo\Events\ExpoNotificationSent;
 use NotificationChannels\Expo\Exceptions\CouldNotSendNotification;
 use NotificationChannels\Expo\Gateway\ExpoEnvelope;
 use NotificationChannels\Expo\Gateway\ExpoGateway;
@@ -51,6 +52,8 @@ final readonly class ExpoChannel
             $this->dispatchFailedEvents($notifiable, $notification, $response->errors());
         } elseif ($response->isFatal()) {
             throw CouldNotSendNotification::becauseTheServiceRespondedWithAnError($response->message());
+        } else {
+            $this->dispatchSentEvent($notifiable, $notification, $tokens, $response->tickets());
         }
     }
 
@@ -64,6 +67,35 @@ final readonly class ExpoChannel
         foreach ($errors as $error) {
             $this->events->dispatch(new NotificationFailed($notifiable, $notification, self::NAME, $error));
         }
+    }
+
+    /**
+     * Dispatch the sent event with a token → ticket map.
+     *
+     * @param  array<int, ExpoPushToken>  $tokens
+     * @param  array<int, string>  $ticketIds
+     */
+    private function dispatchSentEvent(
+        object $notifiable,
+        Notification $notification,
+        array $tokens,
+        array $ticketIds,
+    ): void {
+        if ($ticketIds === []) {
+            return;
+        }
+
+        $tickets = [];
+
+        foreach ($ticketIds as $idx => $ticketId) {
+            $token = $tokens[$idx] ?? null;
+
+            if ($token !== null) {
+                $tickets[(string) $token] = $ticketId;
+            }
+        }
+
+        $this->events->dispatch(new ExpoNotificationSent($notifiable, $notification, $tickets));
     }
 
     /**
