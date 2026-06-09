@@ -129,9 +129,13 @@ final class FoodWasDelivered extends Notification
     }
 }
 
-final class CarHasCrashed extends Notification {}
+final class CarHasCrashed extends Notification
+{
+}
 
-final class Guest {}
+final class Guest
+{
+}
 
 final class Customer
 {

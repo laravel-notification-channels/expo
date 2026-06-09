@@ -74,6 +74,8 @@ final readonly class ExpoGatewayUsingGuzzle implements ExpoGateway
 
     /**
      * Compress the given payload if the size is greater than the threshold (1 KiB).
+     *
+     * @return array{0: array<string, string>, 1: string}
      */
     private function compressUsingGzip(string $payload): array
     {
@@ -96,6 +98,8 @@ final readonly class ExpoGatewayUsingGuzzle implements ExpoGateway
 
     /**
      * Get the default headers to be used by the HTTP client.
+     *
+     * @return array<string, string>
      */
     private function getDefaultHeaders(#[SensitiveParameter] ?string $accessToken): array
     {
@@ -116,7 +120,8 @@ final readonly class ExpoGatewayUsingGuzzle implements ExpoGateway
     /**
      * Get an array of potential errors responded by the service.
      *
-     * @param  $tokens  array<int, ExpoPushToken>
+     * @param  array<int, ExpoPushToken>  $tokens
+     * @param  array<int, array<string, mixed>>  $tickets
      * @return array<int, ExpoError>
      */
     private function getPotentialErrors(array $tokens, array $tickets): array
@@ -134,17 +139,22 @@ final readonly class ExpoGatewayUsingGuzzle implements ExpoGateway
 
     /**
      * Get the array of push tickets responded by the service.
+     *
+     * @return array<int, array<string, mixed>>
      */
     private function getPushTickets(ResponseInterface $response): array
     {
-        /** @var array $body */
+        /** @var array<string, mixed> $body */
         $body = json_decode((string) $response->getBody(), true);
 
+        /** @var array<int, array<string, mixed>> */
         return Arr::get($body, 'data', []);
     }
 
     /**
      * Create and return an ExpoError object representing a failed delivery.
+     *
+     * @param  array<string, mixed>  $ticket
      */
     private function makeError(ExpoPushToken $token, array $ticket): ExpoError
     {

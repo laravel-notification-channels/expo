@@ -56,6 +56,8 @@ final readonly class ExpoChannel
 
     /**
      * Dispatch failed events for notifications that weren't delivered.
+     *
+     * @param  array<int, ExpoError>  $errors
      */
     private function dispatchFailedEvents(object $notifiable, Notification $notification, array $errors): void
     {
@@ -75,6 +77,7 @@ final readonly class ExpoChannel
             throw CouldNotSendNotification::becauseTheMessageIsMissing();
         }
 
+        /** @var ExpoMessage */
         return $notification->toExpo($notifiable);
     }
 
@@ -97,6 +100,7 @@ final readonly class ExpoChannel
             $tokens = $tokens->toArray();
         }
 
+        /** @var array<int, ExpoPushToken> */
         return Arr::wrap($tokens);
     }
 }

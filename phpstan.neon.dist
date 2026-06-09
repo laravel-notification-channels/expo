@@ -7,9 +7,7 @@ parameters:
 
     level: max
 
-    checkMissingIterableValueType: false
-
-    checkGenericClassInNonGenericObjectType: false
-
     ignoreErrors:
-        - '#Method NotificationChannels\\Expo\\Gateway\\ExpoGatewayUsingGuzzle::getPushTickets\(\) should return array but returns mixed.#'
+        -
+            message: '#Parameter \#4 \$data of class Illuminate\\Notifications\\Events\\NotificationFailed constructor expects array, NotificationChannels\\Expo\\ExpoError given\.#'
+            path: src/ExpoChannel.php

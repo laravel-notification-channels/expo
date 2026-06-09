@@ -17,6 +17,8 @@ final readonly class ExpoResponse
 
     /**
      * Create a new ExpoResponse instance.
+     *
+     * @param  array<int, ExpoError>|string|null  $context
      */
     private function __construct(private string $type, private array|string|null $context = null)
     {
@@ -26,7 +28,7 @@ final readonly class ExpoResponse
     /**
      * Create a "failed" ExpoResponse instance.
      *
-     * @param  $errors  array<int, ExpoError>
+     * @param  array<int, ExpoError>  $errors
      */
     public static function failed(array $errors): self
     {
@@ -49,6 +51,9 @@ final readonly class ExpoResponse
         return new self(self::OK);
     }
 
+    /**
+     * @return array<int, ExpoError>
+     */
     public function errors(): array
     {
         return is_array($this->context) ? $this->context : [];

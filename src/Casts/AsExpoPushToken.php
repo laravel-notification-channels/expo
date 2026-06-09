@@ -8,10 +8,15 @@ use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
 use InvalidArgumentException;
 use NotificationChannels\Expo\ExpoPushToken;
 
+/**
+ * @implements CastsAttributes<ExpoPushToken, ExpoPushToken|string>
+ */
 final readonly class AsExpoPushToken implements CastsAttributes
 {
     /**
      * Transform the attribute from the underlying model values to an ExpoPushToken.
+     *
+     * @param  array<string, mixed>  $attributes
      */
     public function get($model, string $key, $value, array $attributes): ?ExpoPushToken
     {
@@ -24,6 +29,8 @@ final readonly class AsExpoPushToken implements CastsAttributes
 
     /**
      * Transform the attribute to its underlying model values from an ExpoPushToken.
+     *
+     * @param  array<string, mixed>  $attributes
      */
     public function set($model, string $key, $value, array $attributes): ?string
     {
