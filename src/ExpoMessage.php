@@ -15,6 +15,8 @@ use JsonSerializable;
  * Expo Message Request Format.
  *
  * @see https://docs.expo.dev/push-notifications/sending-notifications/#message-request-format
+ *
+ * @implements Arrayable<string, mixed>
  */
 final class ExpoMessage implements Arrayable, JsonSerializable
 {
@@ -129,6 +131,8 @@ final class ExpoMessage implements Arrayable, JsonSerializable
      * On iOS, displaying the image requires a Notification Service Extension in your app.
      *
      * @see https://docs.expo.dev/push-notifications/sending-notifications/#message-request-format
+     *
+     * @var array<string, mixed>|null
      */
     private ?array $richContent = null;
 
@@ -152,7 +156,7 @@ final class ExpoMessage implements Arrayable, JsonSerializable
     /**
      * Set the number to display in the badge on the app icon.
      *
-     * @throws InvalidArgumentException()
+     * @throws InvalidArgumentException
      *
      * @see ExpoMessage::$badge
      */
@@ -170,7 +174,7 @@ final class ExpoMessage implements Arrayable, JsonSerializable
     /**
      * Set the message body to display in the notification.
      *
-     * @throws InvalidArgumentException()
+     * @throws InvalidArgumentException
      *
      * @see ExpoMessage::$body
      */
@@ -188,7 +192,7 @@ final class ExpoMessage implements Arrayable, JsonSerializable
     /**
      * Set the ID of the notification category that this notification is associated with.
      *
-     * @throws InvalidArgumentException()
+     * @throws InvalidArgumentException
      *
      * @see ExpoMessage::$categoryId
      */
@@ -206,7 +210,7 @@ final class ExpoMessage implements Arrayable, JsonSerializable
     /**
      * Set the ID of the Notification Channel through which to display this notification.
      *
-     * @throws InvalidArgumentException()
+     * @throws InvalidArgumentException
      *
      * @see ExpoMessage::$channelId
      */
@@ -223,6 +227,8 @@ final class ExpoMessage implements Arrayable, JsonSerializable
 
     /**
      * Set the JSON data for the message.
+     *
+     * @param  Arrayable<string, mixed>|Jsonable|JsonSerializable|array<string, mixed>  $value
      *
      * @throws \JsonException
      *
@@ -260,7 +266,7 @@ final class ExpoMessage implements Arrayable, JsonSerializable
     /**
      * Set the expiration time of the message.
      *
-     * @throws InvalidArgumentException()
+     * @throws InvalidArgumentException
      *
      * @see ExpoMessage::$expiration
      */
@@ -350,7 +356,7 @@ final class ExpoMessage implements Arrayable, JsonSerializable
     /**
      * Set the delivery priority of the message, either 'default', 'normal' or 'high.
      *
-     * @throws InvalidArgumentException()
+     * @throws InvalidArgumentException
      *
      * @see ExpoMessage::$priority
      */
@@ -371,7 +377,7 @@ final class ExpoMessage implements Arrayable, JsonSerializable
      * Set rich content to display in the notification.
      * Currently, only an image URL is supported.
      *
-     * @throws InvalidArgumentException()
+     * @throws InvalidArgumentException
      *
      * @see ExpoMessage::$richContent
      * @see https://docs.expo.dev/push-notifications/sending-notifications/#message-request-format
@@ -390,7 +396,7 @@ final class ExpoMessage implements Arrayable, JsonSerializable
     /**
      * Set the subtitle to display in the notification below the title.
      *
-     * @throws InvalidArgumentException()
+     * @throws InvalidArgumentException
      *
      * @see ExpoMessage::$subtitle
      */
@@ -416,7 +422,7 @@ final class ExpoMessage implements Arrayable, JsonSerializable
     /**
      * Set the title to display in the notification.
      *
-     * @throws InvalidArgumentException()
+     * @throws InvalidArgumentException
      *
      * @see ExpoMessage::$title
      */
@@ -434,7 +440,7 @@ final class ExpoMessage implements Arrayable, JsonSerializable
     /**
      * Set the number of seconds for which the message may be kept around for redelivery.
      *
-     * @throws InvalidArgumentException()
+     * @throws InvalidArgumentException
      *
      * @see ExpoMessage::$ttl
      */
@@ -451,6 +457,8 @@ final class ExpoMessage implements Arrayable, JsonSerializable
 
     /**
      * Convert the ExpoMessage instance to its JSON representation.
+     *
+     * @return array<string, mixed>
      */
     public function jsonSerialize(): array
     {
@@ -459,9 +467,12 @@ final class ExpoMessage implements Arrayable, JsonSerializable
 
     /**
      * Get the ExpoMessage instance as an array.
+     *
+     * @return array<string, mixed>
      */
     public function toArray(): array
     {
+        /** @var array<string, mixed> */
         return array_filter(get_object_vars($this), filled(...));
     }
 }

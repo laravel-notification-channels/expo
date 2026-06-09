@@ -47,6 +47,9 @@ final readonly class ExpoPushToken implements Castable, JsonSerializable, String
 
     /**
      * Get the FQCN of the caster to use when casting from / to an ExpoPushToken.
+     *
+     * @param  array<int, string>  $arguments
+     * @return class-string<AsExpoPushToken>
      */
     public static function castUsing(array $arguments): string
     {

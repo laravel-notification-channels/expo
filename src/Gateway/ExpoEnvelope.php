@@ -10,7 +10,11 @@ use InvalidArgumentException;
 use NotificationChannels\Expo\ExpoMessage;
 use NotificationChannels\Expo\ExpoPushToken;
 
-/** @internal */
+/**
+ * @internal
+ *
+ * @implements Arrayable<string, mixed>
+ */
 final readonly class ExpoEnvelope implements Arrayable, Jsonable
 {
     /**
@@ -27,6 +31,8 @@ final readonly class ExpoEnvelope implements Arrayable, Jsonable
 
     /**
      * @see __construct()
+     *
+     * @param  array<int, ExpoPushToken>  $recipients
      */
     public static function make(array $recipients, ExpoMessage $message): self
     {
@@ -35,6 +41,8 @@ final readonly class ExpoEnvelope implements Arrayable, Jsonable
 
     /**
      * Get the ExpoEnvelope instance as an array.
+     *
+     * @return array<string, mixed>
      */
     public function toArray(): array
     {
