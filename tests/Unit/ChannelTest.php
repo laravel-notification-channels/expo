@@ -11,6 +11,7 @@ use Illuminate\Notifications\Events\NotificationFailed;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Notifications\Notification;
 use Illuminate\Support\Testing\Fakes\EventFake;
+use NotificationChannels\Expo\Events\ExpoNotificationFailed;
 use NotificationChannels\Expo\Events\ExpoNotificationSent;
 use NotificationChannels\Expo\Exceptions\CouldNotSendNotification;
 use NotificationChannels\Expo\ExpoChannel;
@@ -76,6 +77,12 @@ final class ChannelTest extends TestCase
         $this->events->assertDispatched(
             NotificationFailed::class,
             static fn (NotificationFailed $event) => $event->channel === 'expo' && $event->data instanceof ExpoError
+        );
+
+        $this->events->assertDispatched(
+            ExpoNotificationFailed::class,
+            static fn (ExpoNotificationFailed $event) => $event->notifiable === $notifiable
+                && $event->notification === $notification
         );
     }
 

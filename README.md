@@ -235,6 +235,31 @@ class HandleFailedExpoNotifications
 }
 ```
 
+### A typed alternative
+
+`NotificationFailed::$data` is documented by the framework as an `array`, so a listener reaching the
+`ExpoError` through it needs a `@var` annotation — and a static analyser will still read an
+`instanceof ExpoError` check on it as impossible.
+
+If you would rather not annotate, listen to `ExpoNotificationFailed` instead. It carries the same
+error, once per refused token, with a native property type:
+
+```php
+use NotificationChannels\Expo\Events\ExpoNotificationFailed;
+
+class HandleFailedExpoNotifications
+{
+    public function handle(ExpoNotificationFailed $event)
+    {
+        if ($event->error->type->isDeviceNotRegistered()) {
+            $event->notifiable->update(['expo_token' => null]);
+        }
+    }
+}
+```
+
+Both events are dispatched, so either one works and existing listeners keep running unchanged.
+
 The `NotificationFailed::$data` property will contain an instance of `ExpoError` which has the following properties:
 
 ```php
