@@ -66,16 +66,16 @@ final readonly class ExpoChannel
      * flag, which is how a channel says it has already reported the failure.
      * Dropping it would make the sender raise its own on the next exception.
      *
-     * The package event carries the same error beside it, typed — the framework
-     * one documents `$data` as an array, so nothing downstream can reach the
-     * `ExpoError` through it without an annotation.
+     * Its `$data` is an array, as the framework documents it and as the other
+     * channels fill it. `ExpoNotificationFailed` carries the same error beside
+     * it with a native property type.
      *
      * @param  array<int, ExpoError>  $errors
      */
     private function dispatchFailedEvents(object $notifiable, Notification $notification, array $errors): void
     {
         foreach ($errors as $error) {
-            $this->events->dispatch(new NotificationFailed($notifiable, $notification, self::NAME, $error));
+            $this->events->dispatch(new NotificationFailed($notifiable, $notification, self::NAME, ['error' => $error]));
             $this->events->dispatch(new ExpoNotificationFailed($notifiable, $notification, $error));
         }
     }
