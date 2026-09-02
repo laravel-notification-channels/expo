@@ -223,7 +223,7 @@ class HandleFailedExpoNotifications
         if ($event->channel !== 'expo') return;
         
         /** @var ExpoError $error */
-        $error = $event->data;
+        $error = $event->data['error'];
 
         // Remove old token
         if ($error->type->isDeviceNotRegistered()) {
@@ -237,9 +237,8 @@ class HandleFailedExpoNotifications
 
 ### A typed alternative
 
-`NotificationFailed::$data` is documented by the framework as an `array`, so a listener reaching the
-`ExpoError` through it needs a `@var` annotation — and a static analyser will still read an
-`instanceof ExpoError` check on it as impossible.
+`NotificationFailed::$data` is an array, so reaching the `ExpoError` inside it still costs you a
+`@var` annotation to keep a static analyser happy.
 
 If you would rather not annotate, listen to `ExpoNotificationFailed` instead. It carries the same
 error, once per refused token, with a native property type:
@@ -260,7 +259,8 @@ class HandleFailedExpoNotifications
 
 Both events are dispatched, so either one works and existing listeners keep running unchanged.
 
-The `NotificationFailed::$data` property will contain an instance of `ExpoError` which has the following properties:
+The error itself, under `NotificationFailed::$data['error']` or on `ExpoNotificationFailed::$error`,
+is an `ExpoError` with the following properties:
 
 ```php
 namespace NotificationChannels\Expo;
