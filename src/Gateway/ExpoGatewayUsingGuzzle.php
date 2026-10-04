@@ -50,6 +50,8 @@ final readonly class ExpoGatewayUsingGuzzle implements ExpoGateway
 
     /**
      * Create a new ExpoClient instance.
+     *
+     * @param  HandlerStack<mixed>|null  $handler
      */
     public function __construct(#[SensitiveParameter] ?string $accessToken = null, ?HandlerStack $handler = null)
     {
