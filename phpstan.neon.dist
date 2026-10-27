@@ -6,8 +6,3 @@ parameters:
         - src
 
     level: max
-
-    ignoreErrors:
-        -
-            message: '#Parameter \#4 \$data of class Illuminate\\Notifications\\Events\\NotificationFailed constructor expects array, NotificationChannels\\Expo\\ExpoError given\.#'
-            path: src/ExpoChannel.php

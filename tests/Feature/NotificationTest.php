@@ -49,7 +49,7 @@ final class NotificationTest extends TestCase
 
         Event::assertDispatched(NotificationFailed::class, function ($event) {
             return $event->channel === 'expo'
-                && $event->data instanceof ExpoError;
+                && $event->data['error'] instanceof ExpoError;
         });
     }
 }

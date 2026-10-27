@@ -76,7 +76,8 @@ final class ChannelTest extends TestCase
 
         $this->events->assertDispatched(
             NotificationFailed::class,
-            static fn (NotificationFailed $event) => $event->channel === 'expo' && $event->data instanceof ExpoError
+            static fn (NotificationFailed $event) => $event->channel === 'expo'
+                && $event->data['error'] instanceof ExpoError
         );
 
         $this->events->assertDispatched(
